@@ -132,6 +132,28 @@ pub unsafe extern "C" fn composer_malloc(size: size_t, lazy: c_int) -> *mut c_vo
     state.memory_manager.allocate(size, lazy)
 }
 
+/// Drop-in `malloc` replacement that protects memory for lazy evaluation.
+#[no_mangle]
+pub unsafe extern "C" fn mozart_malloc(size: size_t) -> *mut c_void {
+
+    init_logging();
+
+    let mut state = STATE.lock().unwrap();
+
+    state.memory_manager.register_sigbus_handler(sigbus_handler)
+        .expect("Could not register SIGBUS handler");
+
+    // Enable lazy execution.
+    state.task_manager.evaluate = false;
+    state.task_manager.threads = 16;
+
+    // TODO This should be discovered dynamically.
+    // TODO No longer needed! This just sets the initial size.
+    state.task_manager.init_task_size = 4096;
+
+    state.memory_manager.allocate(size, 1)
+}
+
 /// Convert a value to be lazily evaluated.
 #[no_mangle]
 pub unsafe extern "C" fn composer_tolazy(pointer: *mut c_void) {

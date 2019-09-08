@@ -12,13 +12,15 @@
 #include "mkl_vml_functions.h"
 #include "mkl.h"
 
+// Wrapper library
 #include "generated/generated.h"
-
+// Allocation functions
 #include <composer.h>
-#include <omp.h>
 
 // Adds a vector with itself many times.
-void add_many_times(int times, double *vector, MKL_INT length) {
+void add_many_times(int times,
+    double *vector,
+    MKL_INT length) {
   for (int i = 0; i < times; ++i) {
     // MKL's add function.
     // Performs elementwise vector[i] = vector[i] + vector[i].
@@ -29,12 +31,8 @@ void add_many_times(int times, double *vector, MKL_INT length) {
 // ------------ Driver -----------------
 
 int main(int argc, char **argv) {
-    mkl_set_num_threads(1);  
-    omp_set_num_threads(1);  
-    composer_init(16, 4096);
-
     const size_t length = 500000000;
-    double *data = (double *)composer_malloc(sizeof(double) * length, 0);
+    double *data = (double *)mozart_malloc(sizeof(double) * length);
     for (int i = 0; i < length; i++) {
         data[i] = i;
     }

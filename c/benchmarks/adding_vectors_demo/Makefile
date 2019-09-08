@@ -20,13 +20,14 @@ endif
 
 CFLAGS=-O3 -Wall -pedantic
 INCLUDE=-I../../composer/ -I../../lib/mkl_add
-EXEC=bench
 
 .PHONY: all clean
 
 all:
-	$(CC) -fopenmp $(CFLAGS) $(INCLUDE) $(LD_LIBRARY_PATH) demo.c -o $(EXEC) -lcomposer -lmkl_add -lm $(INTEL)
+	$(CC) -fopenmp $(CFLAGS) $(INCLUDE) $(LD_LIBRARY_PATH) demo_mkl.c -o bench_mkl -lcomposer -lmkl_add -lm $(INTEL)
 
+sas:
+	$(CC) -fopenmp $(CFLAGS) $(INCLUDE) $(LD_LIBRARY_PATH) demo.c -o bench_sas -lcomposer -lmkl_add -lm $(INTEL)
 
 clean:
-	rm -rf *.o $(EXEC) $(VLIB)
+	rm -rf *.o bench_mkl bench_sas $(VLIB)
