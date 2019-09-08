@@ -1,0 +1,3 @@
+@sa (n: SizeSplit(), a: RegularSplit(n), b: RegularSplit(n), out: RegularSplit(n)) {
+    void vdAdd(MKL_INT n, double *a, double *b, double *out);
+}
